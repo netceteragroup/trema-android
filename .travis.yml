@@ -25,3 +25,6 @@ android:
 
 script:
   - ./gradlew clean build
+
+after_success:
+  - ./gradlew coveralls
