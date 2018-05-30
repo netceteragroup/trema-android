@@ -1,5 +1,9 @@
 language: android
-jdk: oraclejdk8
+jdk:
+  - oraclejdk8
+branches:
+  only:
+    - master
 
 android:
   components:
@@ -18,3 +22,6 @@ android:
   licenses:
     - 'android-sdk-license-.+'
     - 'google-gdk-license-.+'
+
+script:
+  - ./gradlew clean build
