@@ -1,41 +1,44 @@
 package com.netcetera.trema.gradle
 
-import com.netcetera.trema.core.Status
-import com.netcetera.trema.core.XMLTextNode
-import com.netcetera.trema.core.XMLValueNode
+import com.netcetera.trema.TremaParseOutput
+import com.netcetera.trema.TremaParser
 import com.netcetera.trema.core.api.IExporter
 import com.netcetera.trema.core.api.ITextNode
 import com.netcetera.trema.core.exporting.AndroidExporter
 import com.netcetera.trema.core.exporting.FileOutputStreamFactory
 import com.netcetera.trema.core.exporting.OutputStreamFactory
+import org.apache.commons.lang3.ObjectUtils
+import org.apache.commons.lang3.StringUtils
 
 class TremaExtractor {
 
   private static final String ENCODING = 'UTF-8'
+  final TremaParser tremaParser
+  final OutputStreamFactory outputStreamFactory
 
-  public void extractTrema(List<String> tremaPaths, String stringXmlsPath, Set<String> languages, String defaultLanguage) {
-    def translations = []
-    Set languagesFromTrema = []
-    def masterLanguagesFromTrema = []
+  TremaExtractor() {
+    tremaParser = new TremaParser()
+    outputStreamFactory = new FileOutputStreamFactory()
+  }
+
+  void extractTrema(List<String> tremaPaths, String stringXmlsPath, Set<String> languages, String defaultLanguage) {
+    List<ITextNode> translations = new ArrayList<>()
+    Set<String> languagesFromTrema = new HashSet<>()
+    Set<String> masterLanguagesFromTrema = new HashSet<>()
 
 
     for (String tremaPath : tremaPaths) {
-      paresTrema tremaPath, languagesFromTrema, masterLanguagesFromTrema, translations
+      File tremaFile = new File(tremaPath)
+      def tremaText = tremaFile.getText(ENCODING)
+
+      TremaParseOutput parseOutput = tremaParser.parse(tremaText)
+      translations.addAll(parseOutput.translations)
+      languagesFromTrema.addAll(parseOutput.languages)
+      masterLanguagesFromTrema.add(parseOutput.masterLanguage)
     }
 
-    String defaultLanguageToUse;
-    if (defaultLanguage != null) {
-      defaultLanguageToUse = defaultLanguage
-    } else {
-      defaultLanguageToUse = languagesFromTrema[0]
-    }
-
-    Set<String> languagesToExport
-    if (languages != null) {
-      languagesToExport = languages
-    } else {
-      languagesToExport = languagesFromTrema
-    }
+    String defaultLanguageToUse = StringUtils.defaultIfBlank(defaultLanguage, languagesFromTrema[0])
+    Set<String> languagesToExport = ObjectUtils.defaultIfNull(languages, languagesFromTrema)
 
     if (!languagesToExport.contains(defaultLanguageToUse)) {
       throw new RuntimeException("Language $defaultLanguage is set as masterLang in the trema or plugin configuration, "
@@ -43,56 +46,26 @@ class TremaExtractor {
     }
 
     // filter duplicate translations
-    Map<String, ITextNode> filteredTranslationsMap = new LinkedHashMap<>();
-    for (ITextNode translation : translations) {
-      def key = translation.getKey()
-      if (!filteredTranslationsMap.containsValue(key)) {
-        filteredTranslationsMap.put(key, translation)
-      }
-    }
+    List<ITextNode> filteredTranslations = translations.unique(false) {t1, t2 -> t1.key <=> t2.key}
 
-    def filteredTranslations = []
-    filteredTranslations.addAll(filteredTranslationsMap.values())
-
-
-    writeTranslations filteredTranslations, languagesToExport, defaultLanguageToUse, stringXmlsPath
+    writeTranslations(filteredTranslations, languagesToExport, defaultLanguageToUse, stringXmlsPath)
   }
 
-  private static void paresTrema(String tremaPath, languages, masterLanguages, translations) {
-    File tremaFile = new File(tremaPath)
-    def tremaText = tremaFile.getText(ENCODING)
-    def trema = new XmlParser().parseText(tremaText)
-    trema.text.each { text ->
-      def translationKey = text.'@key'.replace('.', '_').replace('-', '_')
-      def translationText = new XMLTextNode(translationKey, text.'@context')
-      text.value.each { value ->
-        languages.add(value.'@lang')
-        def status = Status.valueOf(value.'@status')
-        def translationValue = new XMLValueNode(value.'@lang', status, value.text())
-        translationText.addValueNode(translationValue)
-      }
-      translations.add(translationText)
-    }
-    masterLanguages.add(trema.'@masterLang')
-  }
-
-  private
-  static void writeTranslations(List<ITextNode> translations, languages, String defaultLanguage, String stringXmlsPath) {
+  private void writeTranslations(List<ITextNode> translations, languages, String defaultLanguage, String stringXmlsPath) {
     writeTranslation translations, defaultLanguage, stringXmlsPath
-    languages.remove(defaultLanguage);
+    languages.remove(defaultLanguage)
     languages.each { language ->
-      writeTranslation translations, language, "$stringXmlsPath-$language"
+      writeTranslation(translations, language, "$stringXmlsPath-$language")
     }
   }
 
-  private static void writeTranslation(List<ITextNode> translations, String language, String stringXmlPath) {
-    def folder = new File(stringXmlPath)
+  private void writeTranslation(List<ITextNode> translations, String language, String stringXmlPath) {
+    File folder = new File(stringXmlPath)
     if (!folder.exists()) {
       folder.mkdirs()
     }
 
     File outputStringFile = new File("$stringXmlPath/strings.xml")
-    OutputStreamFactory outputStreamFactory = new FileOutputStreamFactory()
     IExporter androidTremaExporter = new AndroidExporter(outputStringFile, outputStreamFactory)
     androidTremaExporter.export(translations.toArray(new ITextNode[0]), null, language, null)
   }
