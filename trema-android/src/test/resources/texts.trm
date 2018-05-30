@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- generated on Tue Apr 09 15:57:39 CEST 2013 -->
+<trema masterLang="en" noNamespaceSchemaLocation="http://software.group.nca/trema/schema/trema-1.0.xsd">
+  <text key="key.with.dots">
+    <context />
+    <value lang="de" status="initial">Irrelevant</value>
+    <value lang="en" status="initial">Irrelevant</value>
+    <value lang="fr" status="initial">Irrelevant</value>
+    <value lang="it" status="initial">Irrelevant</value>
+  </text>
+  <text key="key-with-dashes">
+    <context />
+    <value lang="de" status="initial">Irrelevant</value>
+    <value lang="en" status="initial">Irrelevant</value>
+    <value lang="fr" status="initial">Irrelevant</value>
+    <value lang="it" status="initial">Irrelevant</value>
+  </text>
+  <text key="textWithPlaceholders">
+    <context />
+    <value lang="de" status="initial">%d %i %o %u %x %X %f %p Some text with mixed %e %E %g %G %c %s %@ iOS and %% Android placeholders %15$d DE</value>
+    <value lang="en" status="initial">%d %i %o %u %x %X %f %p Some text with mixed %e %E %g %G %c %s %@ iOS and %% Android placeholders %15$d EN</value>
+    <value lang="fr" status="initial">%d %i %o %u %x %X %f %p Some text with mixed %e %E %g %G %c %s %@ iOS and %% Android placeholders %15$d FR</value>
+    <value lang="it" status="initial">%d %i %o %u %x %X %f %p Some text with mixed %e %E %g %G %c %s %@ iOS and %% Android placeholders %15$d IT</value>
+  </text>
+  <text key="normal_text">
+    <context />
+    <value lang="de" status="initial">DE</value>
+    <value lang="en" status="initial">EN</value>
+    <value lang="fr" status="initial">FR</value>
+    <value lang="it" status="initial">IT</value>
+  </text>
+  <text key="single_quotes">
+    <context />
+    <value lang="de" status="initial">Some text with 'single' quotes</value>
+    <value lang="en" status="initial">Some text with 'single' quotes</value>
+    <value lang="fr" status="initial">Some text with 'single' quotes</value>
+    <value lang="it" status="initial">Some text with 'single' quotes</value>
+  </text>
+  <text key="double_quotes">
+    <context />
+    <value lang="de" status="initial">Some text with "double" quotes</value>
+    <value lang="en" status="initial">Some text with "double" quotes</value>
+    <value lang="fr" status="initial">Some text with "double" quotes</value>
+    <value lang="it" status="initial">Some text with "double" quotes</value>
+  </text>
+</trema>

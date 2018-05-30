@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources><!-- Generated file - do not edit -->
+  <string name="key_with_dots">Irrelevant</string>
+  <string name="key_with_dashes">Irrelevant</string>
+  <string name="textWithPlaceholders">%1$d %2$d %3$o %4$d %5$x %6$X %7$f %p Some text with mixed %8$e %9$E %10$g %11$G %12$c %13$s %14$s iOS and %% Android placeholders %15$d EN</string>
+  <string name="normal_text">EN</string>
+  <string name="single_quotes">Some text with \'single\' quotes</string>
+  <string name="double_quotes">Some text with "double" quotes</string>
+</resources>
