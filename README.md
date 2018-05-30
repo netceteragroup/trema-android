@@ -1,1 +1,2 @@
 ![Travis-ci](https://api.travis-ci.org/netceteragroup/trema-android.svg)
+[![Coverage Status](https://coveralls.io/repos/github/netceteragroup/trema-android/badge.svg?branch=master)](https://coveralls.io/github/netceteragroup/trema-android?branch=master)
