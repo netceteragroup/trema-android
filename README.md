@@ -1,0 +1,1 @@
+![Travis-ci](https://api.travis-ci.org/netceteragroup/trema-android.svg)
